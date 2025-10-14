@@ -8,12 +8,13 @@ import { subdivisionService } from '../../services/subdivisionService'
 import { wireService, Wire } from '../../services/wireService'
 import { bearingService, Bearing } from '../../services/bearingService'
 import { impellerService, Impeller } from '../../services/impellerService'
+import { laborPaymentService, LaborPayment } from '../../services/laborPaymentService'
 import { Motor, Subdivision } from '../../types/database'
 
 interface ReferenceItemSelectionModalProps {
   isOpen: boolean
   onClose: () => void
-  referenceType: 'motors' | 'counterparties' | 'subdivisions' | 'wires' | 'bearings' | 'impellers'
+  referenceType: 'motors' | 'counterparties' | 'subdivisions' | 'wires' | 'bearings' | 'impellers' | 'labor_payments'
   onSelectItem: (item: { name: string; price?: number }) => void
 }
 
@@ -32,6 +33,7 @@ export const ReferenceItemSelectionModal: React.FC<ReferenceItemSelectionModalPr
   const [wires, setWires] = useState<Wire[]>([])
   const [bearings, setBearings] = useState<Bearing[]>([])
   const [impellers, setImpellers] = useState<Impeller[]>([])
+  const [laborPayments, setLaborPayments] = useState<LaborPayment[]>([])
 
   useEffect(() => {
     if (isOpen) {
@@ -61,6 +63,9 @@ export const ReferenceItemSelectionModal: React.FC<ReferenceItemSelectionModalPr
       } else if (referenceType === 'impellers') {
         const data = await impellerService.getAll()
         setImpellers(data)
+      } else if (referenceType === 'labor_payments') {
+        const data = await laborPaymentService.getAll()
+        setLaborPayments(data)
       }
     } catch (err) {
       setError('Не удалось загрузить данные')
@@ -106,7 +111,7 @@ export const ReferenceItemSelectionModal: React.FC<ReferenceItemSelectionModalPr
           bearing.type.toLowerCase().includes(query) ||
           bearing.diameter.toString().includes(query)
       )
-    } else {
+    } else if (referenceType === 'impellers') {
       return impellers.filter(
         (impeller) =>
           impeller.name.toLowerCase().includes(query) ||
@@ -114,6 +119,14 @@ export const ReferenceItemSelectionModal: React.FC<ReferenceItemSelectionModalPr
           impeller.outer_diameter.toString().includes(query) ||
           impeller.height.toString().includes(query) ||
           impeller.blade_count.toString().includes(query)
+      )
+    } else {
+      return laborPayments.filter(
+        (payment) =>
+          payment.payment_name.toLowerCase().includes(query) ||
+          payment.full_name.toLowerCase().includes(query) ||
+          payment.short_name.toLowerCase().includes(query) ||
+          payment.position.toLowerCase().includes(query)
       )
     }
   }
@@ -151,13 +164,19 @@ export const ReferenceItemSelectionModal: React.FC<ReferenceItemSelectionModalPr
     onClose()
   }
 
+  const handleSelectLaborPayment = (payment: LaborPayment) => {
+    onSelectItem({ name: payment.payment_name, price: payment.hourly_rate })
+    onClose()
+  }
+
   const getTitle = () => {
     if (referenceType === 'motors') return 'Выбор двигателя'
     if (referenceType === 'counterparties') return 'Выбор контрагента'
     if (referenceType === 'subdivisions') return 'Выбор подразделения'
     if (referenceType === 'wires') return 'Выбор провода'
     if (referenceType === 'bearings') return 'Выбор подшипника'
-    return 'Выбор крыльчатки'
+    if (referenceType === 'impellers') return 'Выбор крыльчатки'
+    return 'Выбор оплаты труда'
   }
 
   const filteredItems = getFilteredItems()
@@ -322,6 +341,30 @@ export const ReferenceItemSelectionModal: React.FC<ReferenceItemSelectionModalPr
                         <span>Высота: {impeller.height} мм</span>
                         <span>Лопасти: {impeller.blade_count}</span>
                       </div>
+                    </div>
+                  </div>
+                </button>
+              ))}
+
+            {referenceType === 'labor_payments' &&
+              (filteredItems as LaborPayment[]).map((payment) => (
+                <button
+                  key={payment.id}
+                  onClick={() => handleSelectLaborPayment(payment)}
+                  className="w-full p-3 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors text-left"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900">{payment.payment_name}</p>
+                      <div className="flex gap-4 mt-1 text-xs text-gray-500">
+                        <span>ФИО: {payment.short_name}</span>
+                        <span>Должность: {payment.position}</span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-gray-900">
+                        {payment.hourly_rate.toLocaleString('ru-RU')} ₽/час
+                      </p>
                     </div>
                   </div>
                 </button>

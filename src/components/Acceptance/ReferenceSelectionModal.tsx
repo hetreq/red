@@ -11,7 +11,7 @@ import { ReferenceTypeForm } from './ReferenceTypeForm'
 interface ReferenceSelectionModalProps {
   isOpen: boolean
   onClose: () => void
-  onSelectReference: (referenceType: 'motors' | 'counterparties' | 'subdivisions' | 'wires' | 'bearings' | 'impellers') => void
+  onSelectReference: (referenceType: 'motors' | 'counterparties' | 'subdivisions' | 'wires' | 'bearings' | 'impellers' | 'labor_payments') => void
 }
 
 export const ReferenceSelectionModal: React.FC<ReferenceSelectionModalProps> = ({
@@ -48,7 +48,7 @@ export const ReferenceSelectionModal: React.FC<ReferenceSelectionModalProps> = (
   )
 
   const handleSelect = (referenceType: string) => {
-    onSelectReference(referenceType as 'motors' | 'counterparties' | 'subdivisions' | 'wires' | 'bearings' | 'impellers')
+    onSelectReference(referenceType as 'motors' | 'counterparties' | 'subdivisions' | 'wires' | 'bearings' | 'impellers' | 'labor_payments')
   }
 
   const handleSaveNewReference = async (
