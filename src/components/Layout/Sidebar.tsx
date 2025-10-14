@@ -14,6 +14,8 @@ import {
   FolderArchive,
   Cable,
   Circle,
+  Wallet,
+  Fan,
 } from 'lucide-react'
 
 interface NavItemProps {
@@ -89,6 +91,16 @@ export const Sidebar: React.FC = () => {
       to: '/app/reference/bearings',
       icon: <Circle className="w-5 h-5" />,
       label: 'Подшипники',
+    },
+    {
+      to: '/app/reference/impellers',
+      icon: <Fan className="w-5 h-5" />,
+      label: 'Крыльчатки',
+    },
+    {
+      to: '/app/reference/labor-payments',
+      icon: <Wallet className="w-5 h-5" />,
+      label: 'Оплата труда',
     },
   ]
 
