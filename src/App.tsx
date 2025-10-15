@@ -29,6 +29,7 @@ import Wires from './pages/Reference/Wires'
 import Bearings from './pages/Reference/Bearings'
 import Impellers from './pages/Reference/Impellers'
 import { LaborPayments } from './pages/Reference/LaborPayments'
+import { SpecialDocuments } from './pages/Reference/SpecialDocuments'
 import { MotorDetails } from './pages/Motors/MotorDetails'
 import { EditMotorDetails } from './pages/Motors/EditMotorDetails'
 
@@ -60,6 +61,7 @@ function App() {
             <Route path="reference/bearings" element={<Bearings />} />
             <Route path="reference/impellers" element={<Impellers />} />
             <Route path="reference/labor-payments" element={<LaborPayments />} />
+            <Route path="reference/special-documents" element={<SpecialDocuments />} />
             {/* Motor Details */}
             <Route path="motors/:id" element={<MotorDetails />} />
             <Route path="motors/:id/edit" element={<EditMotorDetails />} />

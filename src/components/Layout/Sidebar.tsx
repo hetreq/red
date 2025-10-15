@@ -16,6 +16,7 @@ import {
   Circle,
   Wallet,
   Fan,
+  FileSpreadsheet,
 } from 'lucide-react'
 
 interface NavItemProps {
@@ -101,6 +102,11 @@ export const Sidebar: React.FC = () => {
       to: '/app/reference/labor-payments',
       icon: <Wallet className="w-5 h-5" />,
       label: 'Оплата труда',
+    },
+    {
+      to: '/app/reference/special-documents',
+      icon: <FileSpreadsheet className="w-5 h-5" />,
+      label: 'Документы спец',
     },
   ]
 

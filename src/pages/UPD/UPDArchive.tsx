@@ -5,8 +5,10 @@ import { Button } from '../../components/ui/Button'
 import { Alert } from '../../components/ui/Alert'
 import { getUpdDocuments, disbandUpdDocument, UPDDocumentWithCounterparty } from '../../services/updService'
 import { DisbandConfirmationModal } from '../../components/UPD/DisbandConfirmationModal'
-import { CreditCard as Edit, FileText, XCircle, Pencil } from 'lucide-react'
+import { SpecialDocumentSelectionModal } from '../../components/UPD/SpecialDocumentSelectionModal'
+import { CreditCard as Edit, FileText, XCircle, Pencil, FileSpreadsheet } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
+import { SpecialDocument } from '../../services/specialDocumentService'
 
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString)
@@ -39,6 +41,7 @@ export const UPDArchive: React.FC = () => {
   const [selectedUpd, setSelectedUpd] = useState<UPDDocumentWithCounterparty | null>(null)
   const [editingNumberId, setEditingNumberId] = useState<string | null>(null)
   const [editedNumber, setEditedNumber] = useState<string>('')
+  const [isSpecialDocModalOpen, setIsSpecialDocModalOpen] = useState(false)
 
   useEffect(() => {
     loadUpdDocuments()
@@ -117,6 +120,10 @@ export const UPDArchive: React.FC = () => {
   const handleCancelEdit = () => {
     setEditingNumberId(null)
     setEditedNumber('')
+  }
+
+  const handleSelectSpecialDocument = (document: SpecialDocument) => {
+    console.log('Selected special document:', document)
   }
 
   if (loading) {
@@ -218,6 +225,13 @@ export const UPDArchive: React.FC = () => {
                           >
                             <Pencil className="w-4 h-4" />
                           </button>
+                          <button
+                            onClick={() => setIsSpecialDocModalOpen(true)}
+                            className="text-gray-400 hover:text-indigo-600"
+                            title="Справочник Документов спец"
+                          >
+                            <FileSpreadsheet className="w-4 h-4" />
+                          </button>
                         </div>
                       )}
                     </td>
@@ -277,6 +291,12 @@ export const UPDArchive: React.FC = () => {
           onConfirm={handleConfirmDisband}
           documentNumber={selectedUpd?.document_number || ''}
           loading={disbandingId !== null}
+        />
+
+        <SpecialDocumentSelectionModal
+          isOpen={isSpecialDocModalOpen}
+          onClose={() => setIsSpecialDocModalOpen(false)}
+          onSelect={handleSelectSpecialDocument}
         />
       </div>
     </AppLayout>
